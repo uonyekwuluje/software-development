@@ -25,3 +25,7 @@ jobs:
       - name: Test Python3
         run: |
            python3 hello.py
+
+      - name: Test Custom Variable
+        run: |
+           echo "Custom Variable => ${T_VAR}"
