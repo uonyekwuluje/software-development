@@ -1,0 +1,27 @@
+name: test-workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  sysprep:
+    runs-on: 'base'
+    steps:
+      - name: Clean Workspace Path
+        run: |
+           echo "Cleaning Build Workspace"
+           rm -Rf "{{ github.workspace }}"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+           ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Test Shell
+        run: |
+           ls -la
