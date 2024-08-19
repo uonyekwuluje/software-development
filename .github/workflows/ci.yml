@@ -28,4 +28,4 @@ jobs:
 
       - name: Test Custom Variable
         run: |
-           echo "Custom Variable => ${T_VAR}"
+           echo "Custom Variable => ${{env.T_VAR}}"
