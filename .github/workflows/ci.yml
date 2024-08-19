@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  sysprep:
+  run-pipeline:
     runs-on: 'base'
     steps:
       - name: Clean Workspace Path
@@ -22,6 +22,6 @@ jobs:
         with:
            ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Test Shell
+      - name: Test Python3
         run: |
-           ls -la
+           python3 hello.py
