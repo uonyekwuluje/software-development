@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  run-pipeline:
+  test-pipeline:
     runs-on: 'bash'
     steps:
       - name: Clean Workspace Path
@@ -29,3 +29,21 @@ jobs:
       - name: Test Custom Variable
         run: |
            echo "Custom Variable => ${{ vars.T_VAR }}"
+
+
+  build-app:
+    runs-on: 'bash'
+    steps:
+      - name: Clean Workspace Path
+        run: |
+           echo "Cleaning Build Workspace"
+           rm -Rf "{{ github.workspace }}"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/amd64
+
