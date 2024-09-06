@@ -47,3 +47,17 @@ jobs:
         with:
           platforms: linux/amd64
 
+      - name: Build Docker Image
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          dockerfile: ./python-flask/Dockerfile
+          repository: ${{ secrets.AWS_ECR_CONTAINER_URI }}
+          registry: docker.pkg.github.com
+          context: ./python-flask/
+          file: ./python-flask/Dockerfile
+          push: true
+          provenance: false
+          tags: |
+            ${{ secrets.AWS_ECR_CONTAINER_URI }}:${{ github.sha }}
+            ${{ secrets.AWS_ECR_CONTAINER_URI }}:latest
