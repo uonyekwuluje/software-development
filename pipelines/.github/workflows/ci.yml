@@ -1,0 +1,74 @@
+name: test-workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-pipeline:
+    runs-on: 'bash'
+    steps:
+      - name: Clean Workspace Path
+        run: |
+           echo "Cleaning Build Workspace"
+           rm -Rf "{{ github.workspace }}"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+           ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Test Python3
+        run: |
+           python3 hello.py
+
+      - name: Test Custom Variable
+        run: |
+           echo "Custom Variable => ${{ vars.T_VAR }}"
+
+
+  build-app:
+    runs-on: 'bash'
+    steps:
+      - name: Clean Workspace Path
+        run: |
+           echo "Cleaning Build Workspace"
+           rm -Rf "{{ github.workspace }}"
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Login to AWS ECR.
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/amd64
+
+      - name: Build Docker Image
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          dockerfile: ./python-flask/Dockerfile
+          repository: ${{ secrets.AWS_ECR_CONTAINER_URI }}
+          registry: docker.pkg.github.com
+          context: ./python-flask/
+          file: ./python-flask/Dockerfile
+          push: true
+          provenance: false
+          tags: |
+            ${{ secrets.AWS_ECR_CONTAINER_URI }}:${{ github.sha }}
+            ${{ secrets.AWS_ECR_CONTAINER_URI }}:latest
