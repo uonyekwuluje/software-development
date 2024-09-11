@@ -86,3 +86,9 @@ jobs:
            echo "Test/Check Output"
            cat ./python/server-out.yml
            #rm -Rf "{{ github.workspace }}"
+
+      - name: Archive results
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-report
+          path: ./python/server-out.yml
