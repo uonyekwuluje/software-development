@@ -72,3 +72,17 @@ jobs:
           tags: |
             ${{ secrets.AWS_ECR_CONTAINER_URI }}:${{ github.sha }}
             ${{ secrets.AWS_ECR_CONTAINER_URI }}:latest
+
+      - name: Substitute Variables
+        uses: danielr1996/envsubst-action@1.0.0
+        env:
+          IMAGE_DIGEST: ${{ secrets.AWS_ECR_CONTAINER_URI }}@${{ steps.docker_build.outputs.digest }}
+        with:
+          input: ./python/server.yml
+          output: ./python/server-out.yml
+
+      - name: Test Output
+        run: |
+           echo "Test/Check Output"
+           cat ./python/server-out.yml
+           #rm -Rf "{{ github.workspace }}"
