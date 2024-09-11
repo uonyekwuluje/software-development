@@ -62,11 +62,11 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v3
         with:
-          dockerfile: ./python-flask/Dockerfile
+          dockerfile: ./python/python-flask/Dockerfile
           repository: ${{ secrets.AWS_ECR_CONTAINER_URI }}
           registry: docker.pkg.github.com
-          context: ./python-flask/
-          file: ./python-flask/Dockerfile
+          context: ./python/python-flask/
+          file: ./python/python-flask/Dockerfile
           push: true
           provenance: false
           tags: |
